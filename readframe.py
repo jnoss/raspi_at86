@@ -47,8 +47,14 @@ print 'detected frame of length: ', frame_length_to_read #, ' usng array to read
 
 resp2=spi.xfer2(array_to_read_frame)  # xfer2 keeps ce open between bytes, xfer closes and reopns
 print resp2
+print "----PSDU contents are:----"
 for i in resp2[2:len(resp2)-2]:
  print "in dec %s hex %s as bin %s" % (i, hex(i), bin(i)),
  if ((i >= 32) and (i <= 126)):
-  print "as chr %s", chr(i)
-print 'done'
+  print "as chr %s" % chr(i)
+ else:
+  print ''
+print '---- end of PSDU----'
+ed=resp2[len(resp2)-2]
+rx_status=resp2[len(resp2)-1]
+print 'phy was %s, ed is hex %s, dec %s, and rx_status is hex %s, bin %s' % (resp2[0],hex(ed),ed,hex(rx_status),rx_status)

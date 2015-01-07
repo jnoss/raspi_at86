@@ -86,7 +86,7 @@ def readreg(register_to_read):
   resp_val=resp[1]
   hex_resp_phy=hex(resp_phy)
   hex_resp_val=hex(resp_val)
-  print 'response is: PHY: ', hex_resp_phy, ' and register value: ', hex_resp_val
+  print 'response is: PHY: ', hex_resp_phy, ' and register value: hex %s, bin %s' % (hex_resp_val, bin(resp_val))
   return resp_phy, resp_val, hex_resp_phy, hex_resp_val
   
   
