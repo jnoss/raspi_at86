@@ -21,7 +21,7 @@ print 'command byte is: ', hex(commandByte)
 
 #for byte_to_write in 
 data_to_write=sys.argv[1:]
-# print byte_to_write
+print  'writing', data_to_write
 data_to_write.insert(0,hex(frameLength))
 data_to_write.insert(0,hex(commandByte))
 #data_to_write=int(sys.argv[2],16)
@@ -39,5 +39,5 @@ spi.open(0,0)
 
 resp=spi.xfer2(myarray)  # xfer2 keeps ce open between bytes, xfer closes and reopns
 print 'PHY is: ', hex(resp[0])
-print resp
+#print resp #the rest of the bytes are unneeded
 print 'done'

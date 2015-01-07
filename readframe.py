@@ -37,14 +37,18 @@ print 'command byte is: ', hex(commandByte)
 spi = spidev.SpiDev()
 spi.open(0,0)
 
-resp=spi.xfer2([commandByte,0x00])  # xfer2 keeps ce open between bytes, xfer closes and reopns
+resp=spi.xfer2([commandByte,0x00])  # xfer2 keeps ce open between bytes, xfer closes and reopns -- note we're sending two bytes one to start the read and the next to get the phr back as 2nd byte
 print 'PHY is: ', hex(resp[0]), ' PHR is: ', hex(resp[1])
 frame_length_to_read=resp[1]
-array_to_read_frame=[0x00]*frame_length_to_read
+array_to_read_frame=[0x00]*(frame_length_to_read+3) # adding two byte at end for ED and rx_status
 array_to_read_frame.insert(0,commandByte)
 
-print 'frame of length: ', frame_length_to_read, ' usng array to read fram: ' , array_to_read_frame
+print 'detected frame of length: ', frame_length_to_read #, ' usng array to read fram: ' , array_to_read_frame
 
 resp2=spi.xfer2(array_to_read_frame)  # xfer2 keeps ce open between bytes, xfer closes and reopns
 print resp2
+for i in resp2[2:len(resp2)-2]:
+ print "in dec %s hex %s as bin %s" % (i, hex(i), bin(i)),
+ if ((i >= 32) and (i <= 126)):
+  print "as chr %s", chr(i)
 print 'done'
