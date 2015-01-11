@@ -22,4 +22,4 @@ spi = spidev.SpiDev()
 spi.open(0,0)
 
 resp=spi.xfer2([commandByte,0x00])  # xfer2 keeps ce open between bytes, xfer closes and reopns
-print 'response is: PHY: ', hex(resp[0]), ' and register value: ', hex(resp[1])
+print 'response is: PHY: ', hex(resp[0]), ' and register value: ', hex(resp[1]), ' and binary: ', bin(resp[1])
