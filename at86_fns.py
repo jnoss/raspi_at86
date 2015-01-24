@@ -27,15 +27,15 @@ def readframe():
 
   print 'detected frame of length: ', frame_length_to_read #, ' usng array to read fram: ' , array_to_read_frame
   resp2=spi.xfer2(array_to_read_frame)  # xfer2 keeps ce open between bytes, xfer closes and reopns
-'''  print 'as ints:'
+  '''  print 'as ints:'
   print resp2
-  print 'in hex:'
+  print 'in hex:' '''
   hexarr_resp2=[]
   for x in resp2:
     hexarr_resp2.append(hex(x))
   print hexarr_resp2
-  print 'done' '''
-  
+  '''  print 'done' '''
+
   print resp2
   print "----PSDU contents are:----"
   for i in resp2[2:len(resp2)-2]:
@@ -108,7 +108,7 @@ def readreg(register_to_read):
   
 
 def writereg(register_to_write, data_to_write):
-  print 'writing register: %s with data %s'  ( hex(register_to_write), hex(data_to_write) )
+  print 'writing register: %s with data %s' % ( hex(register_to_write), hex(data_to_write) )
 
   commandByte = ( register_to_write & int('0x3f', 16) ) | registerWriteCommand
   # print 'command byte is: ', hex(commandByte)
