@@ -160,4 +160,22 @@ def getirq():
   if resp_val & (1 << 7):
     print 'irq7 BAT_LOW'
 
+def checkirq(resp_val):
+  if resp_val & (1 << 0):
+    print 'irq0 PLL_LOCK'
+  if resp_val & (1 << 1):
+    print 'irq1 PLL_UNLOCK'
+  if resp_val & (1 << 2):
+    print 'irq2 PLL_UNLOCK'
+  if resp_val & (1 << 3):
+    print 'irq3 TRX_END'
+  if resp_val & (1 << 4):
+    print 'irq4 CCA_ED_DONE'
+  if resp_val & (1 << 5):
+    print 'irq5 AMI'
+  if resp_val & (1 << 6):
+    print 'irq6 TRX_UR'
+  if resp_val & (1 << 7):
+    print 'irq7 BAT_LOW'
+
 
