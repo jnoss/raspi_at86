@@ -39,11 +39,11 @@ def readframe():
   print resp2
   print "----PSDU contents are:----"
   for i in resp2[2:len(resp2)-2]:
-   print "in dec %s hex %s as bin %s" % (i, hex(i), bin(i)),
-   if ((i >= 32) and (i <= 126)):
-    print "as chr %s" % chr(i)
-   else:
-    print ''
+    print "in dec %s hex %s as bin %s" % (i, hex(i), bin(i)),
+    if ((i >= 32) and (i <= 126)):
+      print "as chr %s" % chr(i)
+    else:
+      print ''
   print '---- end of PSDU----'  #note the last 2 bytes of that will be FCS
   ed=resp2[len(resp2)-2]
   rx_status=resp2[len(resp2)-1]   #note also LQI is supposed to be in here somewhere, but I don't see a 3rd byte come out
