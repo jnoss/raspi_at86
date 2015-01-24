@@ -18,23 +18,37 @@ def readframe():
   spi.open(0,0)
  
   resp=spi.xfer2([commandByte,0x00])  # xfer2 keeps ce open between bytes, xfer closes and reopns
-  phy = hex(resp[0])
-  phr = hex(resp[1])
-  print 'PHY is: ', phy, ' PHR is: ', phr
-  frame_length_to_read=resp[1]
-  array_to_read_frame=[0x00]*frame_length_to_read
+  phy = resp[0]
+  phr = resp[1]
+  print 'PHY is: ', hex(phy), ' PHR is: ', hex(phr)
+  frame_length_to_read=phr
+  array_to_read_frame=[0x00]*(frame_length_to_read+3) # add extra bytes for lqi, ed, and rx_status
   array_to_read_frame.insert(0,commandByte)
 
-  print 'frame of length: ', frame_length_to_read, ' usng array to read fram: ' , array_to_read_frame
+  print 'detected frame of length: ', frame_length_to_read #, ' usng array to read fram: ' , array_to_read_frame
   resp2=spi.xfer2(array_to_read_frame)  # xfer2 keeps ce open between bytes, xfer closes and reopns
-  print 'as ints:'
+'''  print 'as ints:'
   print resp2
   print 'in hex:'
   hexarr_resp2=[]
   for x in resp2:
     hexarr_resp2.append(hex(x))
   print hexarr_resp2
-  print 'done'
+  print 'done' '''
+  
+  print resp2
+  print "----PSDU contents are:----"
+  for i in resp2[2:len(resp2)-2]:
+   print "in dec %s hex %s as bin %s" % (i, hex(i), bin(i)),
+   if ((i >= 32) and (i <= 126)):
+    print "as chr %s" % chr(i)
+   else:
+    print ''
+  print '---- end of PSDU----'  #note the last 2 bytes of that will be FCS
+  ed=resp2[len(resp2)-2]
+  rx_status=resp2[len(resp2)-1]   #note also LQI is supposed to be in here somewhere, but I don't see a 3rd byte come out
+  print 'phy was %s, ed is hex %s, dec %s, and rx_status is hex %s, bin %s' % (resp2[0],hex(ed),ed,hex(rx_status),bin(rx_status))
+
   return phy, resp2, hexarr_resp2
 
 #takes an array of bytes (ints) (usu passed in hex rep, but, still bytes)
@@ -42,22 +56,25 @@ def readframe():
 def writeframe(frame_data):
 
   frameLength=len(frame_data)
-  print 'writing frame buffer, length in bytes: ' , frameLength 
+  
+  print 'writing frame buffer, calculated length in bytes: ' , frameLength 
+  phr=frameLength+2
+  print 'setting phr 2 bytes longer for FCS', phr
 
   commandByte = frameWriteCommand
-  print 'command byte is: ', hex(commandByte)
+  # print 'command byte is: ', hex(commandByte)
 
   data_to_write=frame_data
 
-  data_to_write.insert(0,frameLength)
+  data_to_write.insert(0,phr)
   data_to_write.insert(0,commandByte)
 
-  print 'data to write is: ', data_to_write 
+  # print 'data to write is: ', frame_data
 
   myarray=[]
   for x in data_to_write:
     myarray.append(hex(x))
-  print 'showing as hex: ', myarray
+  print 'frame data to write: ', myarray
 
   spi = spidev.SpiDev()
   spi.open(0,0)
@@ -66,8 +83,7 @@ def writeframe(frame_data):
   resp_phy=resp[0] # rest ignore
   hex_resp_phy=hex(resp_phy)
   
-  print 'PHY is: ', hex_resp_phy
-  print 'done'
+  print 'done, PHY is: ', hex_resp_phy
   return resp, hex_resp_phy
   
 #takes reg to read
