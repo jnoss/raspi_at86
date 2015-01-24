@@ -76,7 +76,7 @@ def readreg(register_to_read):
   print 'reading register: ' , hex(register_to_read)
 
   commandByte = ( register_to_read & int('0x3f', 16) ) | registerReadCommand
-  print 'command byte is: ', hex(commandByte)
+  # print 'command byte is: ', hex(commandByte)
 
   spi = spidev.SpiDev()
   spi.open(0,0)
@@ -92,12 +92,11 @@ def readreg(register_to_read):
   
 
 def writereg(register_to_write, data_to_write):
-  print 'writing register: ' , hex(register_to_write)
+  print 'writing register: %s with data %s'  ( hex(register_to_write), hex(data_to_write) )
 
   commandByte = ( register_to_write & int('0x3f', 16) ) | registerWriteCommand
-  print 'command byte is: ', hex(commandByte)
-
-  print 'data to write is: ', hex(data_to_write)
+  # print 'command byte is: ', hex(commandByte)
+  # print 'data to write is: ', hex(data_to_write)
 
   spi = spidev.SpiDev()
   spi.open(0,0)
@@ -105,8 +104,7 @@ def writereg(register_to_write, data_to_write):
   resp=spi.xfer2([commandByte,data_to_write])  # xfer2 keeps ce open between bytes, xfer closes and reopns
   resp_phy=resp[0]
   hex_resp_phy=hex(resp_phy)
-  print 'response is: PHY: ', resp_phy
-  print 'response is: PHY: ', hex_resp_phy
+  print 'response is: PHY: dec: %s, hex: %s ' % (resp_phy, hex_resp_phy)
   return resp_phy, hex_resp_phy
 
 
