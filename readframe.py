@@ -57,4 +57,4 @@ for i in resp2[2:len(resp2)-2]:
 print '---- end of PSDU----'
 ed=resp2[len(resp2)-2]
 rx_status=resp2[len(resp2)-1]
-print 'phy was %s, ed is hex %s, dec %s, and rx_status is hex %s, bin %s' % (resp2[0],hex(ed),ed,hex(rx_status),rx_status)
+print 'phy was %s, ed is hex %s, dec %s, and rx_status is hex %s, bin %s' % (resp2[0],hex(ed),ed,hex(rx_status),bin(rx_status))
