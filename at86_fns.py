@@ -13,7 +13,7 @@ sramWriteCommand = int('0x40',16)  #0 1 0 reserved[4:0] see p20
 def readframe():
   print 'reading frame buffer, length in bytes TBD'
   commandByte = frameReadCommand
-  print 'command byte is: ', hex(commandByte)
+  # print 'command byte is: ', hex(commandByte)
   spi = spidev.SpiDev()
   spi.open(0,0)
  
@@ -24,7 +24,7 @@ def readframe():
   frame_length_to_read=phr
   array_to_read_frame=[0x00]*(frame_length_to_read+3) # add extra bytes for lqi, ed, and rx_status
   array_to_read_frame.insert(0,commandByte)
-
+    
   print 'detected frame of length: ', frame_length_to_read #, ' usng array to read fram: ' , array_to_read_frame
   resp2=spi.xfer2(array_to_read_frame)  # xfer2 keeps ce open between bytes, xfer closes and reopns
   '''  print 'as ints:'
@@ -142,7 +142,22 @@ def getstatus():
   readreg(0x01)
 
 def getirq():
-  readreg(0x0f)
-
+  resp_phy, resp_val, hex_resp_phy, hex_resp_val = readreg(0x0f)
+  if resp_val & (1 << 0):
+    print 'irq0 PLL_LOCK'
+  if resp_val & (1 << 1):
+    print 'irq1 PLL_UNLOCK'
+  if resp_val & (1 << 2):
+    print 'irq2 PLL_UNLOCK'
+  if resp_val & (1 << 3):
+    print 'irq3 TRX_END'
+  if resp_val & (1 << 4):
+    print 'irq4 CCA_ED_DONE'
+  if resp_val & (1 << 5):
+    print 'irq5 AMI'
+  if resp_val & (1 << 6):
+    print 'irq6 TRX_UR'
+  if resp_val & (1 << 7):
+    print 'irq7 BAT_LOW'
 
 
