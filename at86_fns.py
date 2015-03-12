@@ -49,6 +49,8 @@ def readframe():
   rx_status=resp2[len(resp2)-1]   #note also LQI is supposed to be in here somewhere, but I don't see a 3rd byte come out
   print 'phy was %s, ed is hex %s, dec %s, and rx_status is hex %s, bin %s' % (resp2[0],hex(ed),ed,hex(rx_status),bin(rx_status))
 
+  spi.close()
+
   return phy, resp2, hexarr_resp2
 
 #takes an array of bytes (ints) (usu passed in hex rep, but, still bytes)
@@ -84,6 +86,7 @@ def writeframe(frame_data):
   hex_resp_phy=hex(resp_phy)
   
   print 'done, PHY is: ', hex_resp_phy
+  spi.close()
   return resp, hex_resp_phy
   
 #takes reg to read
@@ -103,6 +106,7 @@ def readreg(register_to_read):
   hex_resp_phy=hex(resp_phy)
   hex_resp_val=hex(resp_val)
   print 'response is: PHY: ', hex_resp_phy, ' and register value: hex %s, bin %s' % (hex_resp_val, bin(resp_val))
+  spi.close()
   return resp_phy, resp_val, hex_resp_phy, hex_resp_val
   
   
@@ -121,6 +125,7 @@ def writereg(register_to_write, data_to_write):
   resp_phy=resp[0]
   hex_resp_phy=hex(resp_phy)
   print 'response is: PHY: dec: %s, hex: %s ' % (resp_phy, hex_resp_phy)
+  spi.close()
   return resp_phy, hex_resp_phy
 
 
