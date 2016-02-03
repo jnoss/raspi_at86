@@ -1,6 +1,10 @@
 import spidev
 import time
 import sys
+import RPi.GPIO as GPIO
+
+
+GPIO.setmode(GPIO.BCM)
 
 registerReadCommand = int('0x80',16)   #   // 1  0 ADDRESS[5:0]
 registerWriteCommand = int('0xC0',16)  #1 1 ADDRESS[5:0]
@@ -9,6 +13,19 @@ frameWriteCommand = int('0x60',16)  #0 1 1 reserved[4:0] see p18
 sramReadCommand = int('0x00',16)  #0 0 0 reserved[4:0] see p19-20  //address in byte 2 sent
 sramWriteCommand = int('0x40',16)  #0 1 0 reserved[4:0] see p20
 
+# openlabs extra pins
+openlabs_at86_irq_pin = 23  # input
+openlabs_at86_rst_pin = 24
+openlabs_at86_rst_state = GPIO.HIGH
+openlabs_at86_slp_tr_pin = 25
+openlabs_at86_slp_tr_state = GPIO.LOW
+
+def setup_openlabs_pins():
+  GPIO.setup(openlabs_at86_irq_pin,GPIO.IN)
+  GPIO.setup(openlabs_at86_rst_pin,GPIO.OUT)
+  GPIO.output(openlabs_at86_rst_pin,openlabs_at86_rst_state)
+  GPIO.setup(openlabs_at86_slp_tr_pin,GPIO.OUT)
+  GPIO.output(openlabs_at86_slp_tr_pin,openlabs_at86_slp_tr_state)
 
 def readframe():
   print 'reading frame buffer, length in bytes TBD'
