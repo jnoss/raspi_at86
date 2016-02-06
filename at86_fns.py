@@ -37,13 +37,18 @@ def readframe():
   resp=spi.xfer2([commandByte,0x00])  # xfer2 keeps ce open between bytes, xfer closes and reopns
   phy = resp[0]
   phr = resp[1]
-  print 'PHY is: ', hex(phy), ' PHR is: ', hex(phr)
+  print 'PHY is: ', hex(phy), ' PHR is: ', phr, ' hex:' ,hex(phr)
   frame_length_to_read=phr
-  array_to_read_frame=[0x00]*(frame_length_to_read+3) # add extra bytes for lqi, ed, and rx_status
+  # we already read 2 bytes above, so read 2 extra here for a total of 4 (3 for lqi, ed, status, and 1 for command byte)
+  # we read 2 above, but the new command will read them again, so 
+  array_to_read_frame=[0x00]*(frame_length_to_read+4) # add extra bytes for lqi, ed, and rx_status, and 1 for phr again
   array_to_read_frame.insert(0,commandByte)
     
-  print 'detected frame of length: ', frame_length_to_read #, ' usng array to read fram: ' , array_to_read_frame
-  resp2=spi.xfer2(array_to_read_frame)  # xfer2 keeps ce open between bytes, xfer closes and reopns
+  #print 'detected frame of length: ', frame_length_to_read #, ' usng array to read fram: ' , array_to_read_frame
+
+  # read in array, and drop first 2 bytes (phy and phr) we already read
+  resp2=spi.xfer2(array_to_read_frame)[2:]  # xfer2 keeps ce open between bytes, xfer closes and reopns
+
   '''  print 'as ints:'
   print resp2
   print 'in hex:' '''
@@ -55,16 +60,17 @@ def readframe():
 
   print resp2
   print "----PSDU contents are:----"
-  for i in resp2[2:len(resp2)-2]:
+  for i in resp2[:len(resp2)-3]:
     print "in dec %s hex %s as bin %s" % (i, hex(i), bin(i)),
     if ((i >= 32) and (i <= 126)):
       print "as chr %s" % chr(i)
     else:
       print ''
   print '---- end of PSDU----'  #note the last 2 bytes of that will be FCS
+  lqi=resp2[len(resp2)-3]
   ed=resp2[len(resp2)-2]
   rx_status=resp2[len(resp2)-1]   #note also LQI is supposed to be in here somewhere, but I don't see a 3rd byte come out
-  print 'phy was %s, ed is hex %s, dec %s, and rx_status is hex %s, bin %s' % (resp2[0],hex(ed),ed,hex(rx_status),bin(rx_status))
+  print 'phy was %s, lqi was hex %s, ed is hex %s, dec %s, and rx_status is hex %s, bin %s' % (phy,hex(lqi),hex(ed),ed,hex(rx_status),format(rx_status,'#010b'))
 
   spi.close()
 
