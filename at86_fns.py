@@ -61,7 +61,7 @@ def readframe():
   print resp2
   print "----PSDU contents are:----"
   for i in resp2[:len(resp2)-3]:
-    print "in dec %s hex %s as bin %s" % (i, hex(i), bin(i)),
+    print "in dec %s hex %s as bin %s" % (i, hex(i), format(i,'#010b')),
     if ((i >= 32) and (i <= 126)):
       print "as chr %s" % chr(i)
     else:
@@ -128,7 +128,7 @@ def readreg(register_to_read):
   resp_val=resp[1]
   hex_resp_phy=hex(resp_phy)
   hex_resp_val=hex(resp_val)
-  print 'response is: PHY: ', hex_resp_phy, ' and register value: hex %s, bin %s' % (hex_resp_val, bin(resp_val))
+  print 'response is: PHY: ', hex_resp_phy, ' and register value: hex %s, bin %s' % (hex_resp_val, format(resp_val,'#010b'))
   spi.close()
   return resp_phy, resp_val, hex_resp_phy, hex_resp_val
   
