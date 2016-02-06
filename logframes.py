@@ -3,7 +3,7 @@ from at86_fns import *
 import RPi.GPIO as GPIO
 import time
 
-datalogfile='/root/data.log'
+datalogfile='/root/at86packets.log'
 
 def callback(channel):
  with open(datalogfile,'a') as outfile:
@@ -23,8 +23,8 @@ else:
  raise NameError('not in rx mode')
 '''
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(22,GPIO.IN)
-GPIO.add_event_detect(22,GPIO.RISING,callback=callback)
+GPIO.setup(23,GPIO.IN)
+GPIO.add_event_detect(23,GPIO.RISING,callback=callback)
 getirq() #we need to clear this so we don't loop forever - this is after the event attach to prevent any chance for missing
 while 1:
  try:
